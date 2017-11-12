@@ -11,15 +11,19 @@ class Racing(object):
         self.map1 = pygame.image.load('Map.png')
         self.xOff = 0
         self.yOff = 0
+        self.time = 0
         pygame.init()
-        calibrate.run()
+        #calibrate.run()
 
     def init(self):
-        pass
+        self.__init__()
 
-    def redrawAll(self, screen, car1):
+    def redrawAll(self, screen, car1, text):
         screen.blit(self.map1, (self.xOff, self.yOff))
         screen.blit(car1.image, (car1.x - self.xOff + 450, car1.y - self.yOff + 250))
+        screen.blit(text, (20, 20))
+
+
 
     def keyPressed(self, car1):
         #Takes key input
@@ -43,6 +47,9 @@ class Racing(object):
             pygame.quit();
             sys.exit();
 
+    def reset():
+        car1 = Car(self.width//2, self.height//2)
+
     def run(self):
         clock = pygame.time.Clock()
         screen = pygame.display.set_mode((self.width, self.height))
@@ -52,13 +59,17 @@ class Racing(object):
         pygame.mixer.music.load('engine.wav')
         pygame.mixer.music.play(-1)
         while(True):
-            
-            clock.tick(30)
+            fps = 30
+            clock.tick(fps)
             pygame.display.update()
             self.keyPressed(car1)
             car1.update()
             self.xOff = car1.x
             self.yOff = car1.y
+            font = pygame.font.SysFont("comicsansms", 30)
+            self.time += 1/30
+            timerS = "LAP TIME : " + str(int(self.time))
+            text = font.render(timerS, True, (0, 0, 0))
             
             #Checks for quitting
             for event in pygame.event.get():
@@ -67,7 +78,8 @@ class Racing(object):
                      sys.exit();
 
             screen.fill((0, 255, 0))
-            self.redrawAll(screen, car1)
+            self.redrawAll(screen, car1, text)
+            
             pygame.display.flip()
             pygame.mixer.music.load('engine.wav')
             pygame.mixer.music.play(-1)
